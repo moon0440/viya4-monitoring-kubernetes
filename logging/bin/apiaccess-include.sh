@@ -108,7 +108,7 @@ function get_api_url {
       # Wait loop to allow port-forwarding messages to appear
       while true; do
           # Check if the kubectl port-forward command is no longer running
-          if ! ps -p $kubectl_pid > /dev/null; then
+          if ! ps -p $pfPID > /dev/null; then
               echo "kubectl command has stopped."
               return 1
           fi
