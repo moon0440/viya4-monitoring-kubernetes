@@ -105,8 +105,23 @@ function get_api_url {
       pfPID=$!
       log_debug "pfPID: $pfPID"
 
-      # pause to allow port-forwarding messages to appear
-      sleep 5
+      # Wait loop to allow port-forwarding messages to appear
+      while true; do
+          # Check if the kubectl port-forward command is no longer running
+          if ! ps -p $kubectl_pid > /dev/null; then
+              echo "kubectl command has stopped."
+              return 1
+          fi
+
+          # Check if the tmpfile has content
+          if [ -s "$tmpfile" ]; then
+              echo "$tmpfile has content."
+              break
+          fi
+
+          # Wait for a short duration before checking again
+          sleep 1
+      done
 
       # determine which port port-forwarding is using
       pfRegex='Forwarding from .+:([0-9]+)'
